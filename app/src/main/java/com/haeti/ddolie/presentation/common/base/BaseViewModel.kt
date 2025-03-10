@@ -1,4 +1,4 @@
-package com.haeti.ddolie.presentation.presentation.common.base
+package com.haeti.ddolie.presentation.common.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +22,7 @@ abstract class BaseViewModel<UI_INTENT : UiIntent, UI_STATE : UiState, SIDE_EFFE
 		get() = _uiState.value
 
 	abstract fun onIntent(intent: UI_INTENT)
+
 	protected fun intent(reduce: UI_STATE.() -> UI_STATE) {
 		_uiState.update { currentState.reduce() }
 	}
