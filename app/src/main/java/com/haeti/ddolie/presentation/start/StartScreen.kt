@@ -1,15 +1,20 @@
 package com.haeti.ddolie.presentation.start
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,26 +27,62 @@ import com.haeti.ddolie.presentation.theme.DdoLieTheme
 
 @Composable
 fun StartScreen() {
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        contentAlignment = Alignment.Center,
     ) {
-        Image(
-            painter = painterResource(R.drawable.img_logo),
-            contentDescription = "logo",
-            modifier = Modifier.size(width = 108.dp, height = 70.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            DdoLieTheme.colors.redTertiary,
+                            Color.Transparent
+                        )
+                    ),
+                    shape = CircleShape
+                )
         )
 
-        Spacer(Modifier.height(10.dp))
-
-        Text(
-            text = "시작하려면 화면을\n터치해주세요",
-            fontSize = 15.toTextDp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 23.toTextDp,
-            textAlign = TextAlign.Center
+        Box(
+            modifier = Modifier
+                .size((172 + 46).dp)
+                .background(
+                    color = DdoLieTheme.colors.redSecondary,
+                    shape = CircleShape
+                )
         )
+
+        Box(
+            modifier = Modifier
+                .size(172.dp)
+                .background(
+                    color = DdoLieTheme.colors.redPrimary,
+                    shape = CircleShape,
+                )
+        )
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.img_logo),
+                contentDescription = "logo",
+                modifier = Modifier.size(width = 108.dp, height = 70.dp)
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Text(
+                text = "시작하려면 화면을\n터치해주세요",
+                fontSize = 15.toTextDp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 23.toTextDp,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
