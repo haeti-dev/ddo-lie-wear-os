@@ -3,7 +3,9 @@ package com.haeti.ddolie.presentation.start
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +32,8 @@ fun StartScreen() {
             contentDescription = "logo",
             modifier = Modifier.size(width = 108.dp, height = 70.dp)
         )
+
+        Spacer(Modifier.height(10.dp))
 
         Text(
             text = "시작하려면 화면을\n터치해주세요",
