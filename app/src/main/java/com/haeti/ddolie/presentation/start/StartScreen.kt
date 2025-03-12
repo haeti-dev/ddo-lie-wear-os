@@ -2,6 +2,7 @@ package com.haeti.ddolie.presentation.start
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,20 +20,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.util.toTextDp
+import com.haeti.ddolie.presentation.init.navigation.InitialRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 
 @Composable
-fun StartScreen() {
+fun StartScreen(
+    navController: NavController,
+) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { navController.navigate(InitialRoute.Main) },
         contentAlignment = Alignment.Center,
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
@@ -90,6 +99,6 @@ fun StartScreen() {
 @Composable
 fun PreviewStartScreen() {
     DdoLieTheme {
-        StartScreen()
+        StartScreen(navController = rememberNavController())
     }
 }
