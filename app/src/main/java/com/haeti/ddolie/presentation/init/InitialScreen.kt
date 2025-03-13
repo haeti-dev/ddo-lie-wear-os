@@ -112,6 +112,18 @@ fun InitialScreen() {
             enter = fadeIn(),
             exit = fadeOut()
         ) {
+            val dotPhases = listOf(".", "..", "...")
+            var dotPhaseIndex by remember { mutableIntStateOf(0) }
+
+            LaunchedEffect(isMeasuring) {
+                if (isMeasuring) {
+                    repeat(12) {
+                        dotPhaseIndex = (dotPhaseIndex + 1) % 3
+                        delay(333)
+                    }
+                }
+            }
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -123,7 +135,7 @@ fun InitialScreen() {
                 )
 
                 Text(
-                    text = "측정 중...",
+                    text = "측정 중" + dotPhases[dotPhaseIndex],
                     fontSize = 20.toTextDp,
                     fontWeight = FontWeight.SemiBold,
                     color = DdoLieTheme.colors.white,
