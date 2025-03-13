@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -55,15 +53,14 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
 
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
 
     implementation(libs.coroutines)
     implementation(libs.timber)
 
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.health.services.client)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
