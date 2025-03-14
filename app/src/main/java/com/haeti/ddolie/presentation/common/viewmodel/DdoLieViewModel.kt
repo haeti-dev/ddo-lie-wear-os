@@ -6,6 +6,7 @@ import com.haeti.ddolie.presentation.common.base.BaseViewModel
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.contract.DdoLieState
+import com.haeti.ddolie.presentation.common.contract.LieResult
 import com.haeti.ddolie.presentation.common.manager.HealthServiceManager
 import com.haeti.ddolie.presentation.common.manager.MeasureMessage
 import kotlinx.coroutines.Job
@@ -107,10 +108,16 @@ class DdoLieViewModel(
             delay(5000L)
             measurementJob?.cancel()
 
-            val heartRateAvg = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
+            val finalAvg = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
+            val initialAvg = currentState.initialHeartRateAvg
+            val diff = if (initialAvg != null && finalAvg != null) finalAvg - initialAvg else 0f
 
-            intent { copy(finalHeartRateAvg = heartRateAvg) }
-            Log.e("ViewModel", "Final heart rate average: $heartRateAvg")
+            val result = if (diff >= 2f) LieResult.LIE else LieResult.TRUTH
+
+            intent { copy(finalHeartRateAvg = finalAvg, isLie = result) }
+            Log.e("ViewModel", "Final heart rate average: $finalAvg")
+
+            postSideEffect(DdoLieSideEffect.NavigateToResult)
         }
     }
 }
