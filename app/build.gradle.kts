@@ -52,15 +52,11 @@ dependencies {
     implementation(libs.wear.compose.ui.tooling)
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
-
     implementation(libs.navigation.compose)
-
     implementation(libs.coroutines)
-    implementation(libs.timber)
-
     implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.health.services.client)
+    implementation(libs.accompanist.permissions)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
