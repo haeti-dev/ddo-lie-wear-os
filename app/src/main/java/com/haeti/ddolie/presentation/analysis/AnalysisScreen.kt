@@ -24,8 +24,10 @@ import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
+import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
+import com.haeti.ddolie.presentation.result.navigation.ResultRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 import kotlinx.coroutines.delay
 import kotlin.math.cos
@@ -36,19 +38,25 @@ fun AnalysisScreen(
     navController: NavController,
     viewModel: DdoLieViewModel,
 ) {
-    // 분석 화면 진입 시 최종 측정 완료 로직 실행 (내부적으로 5초 더 측정하고 평균 계산)
     LaunchedEffect(Unit) {
         viewModel.onIntent(DdoLieIntent.FinalizeMeasurement)
+
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is DdoLieSideEffect.NavigateToResult -> {
+                    navController.navigate(ResultRoute.Main)
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    // 원 애니메이션과 점 애니메이션을 위한 상태
     var activeCircleIndex by rememberSaveable { mutableIntStateOf(0) }
     val dotPhases = listOf(".", "..", "...")
     var dotPhaseIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    // FinalizeMeasurement가 진행되는 5초 동안 8개의 원이 순차적으로 켜지는 애니메이션
     LaunchedEffect(Unit) {
-        // 5초 동안 (5회 순환, 1회 순환 = 8 * 125ms = 1초)
         repeat(5) {
             repeat(8) { index ->
                 activeCircleIndex = index
@@ -57,9 +65,7 @@ fun AnalysisScreen(
         }
     }
 
-    // 텍스트의 점 부분이 반복되는 애니메이션 (약 5초 동안)
     LaunchedEffect(Unit) {
-        // 333ms마다 점이 바뀌도록 (5초 정도면 15회 반복)
         repeat(15) {
             dotPhaseIndex = (dotPhaseIndex + 1) % 3
             delay(333)
@@ -67,7 +73,6 @@ fun AnalysisScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 배경에 8개의 원을 그리는 Canvas (초기 화면과 동일한 방식)
         Canvas(modifier = Modifier.fillMaxSize()) {
             val centerX = size.width / 2
             val centerY = size.height / 2
@@ -90,8 +95,6 @@ fun AnalysisScreen(
             }
         }
 
-        // 가운데 텍스트
-        // "거짓말"은 redPrimary 색, " 탐지중"과 점은 흰색으로 처리
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center

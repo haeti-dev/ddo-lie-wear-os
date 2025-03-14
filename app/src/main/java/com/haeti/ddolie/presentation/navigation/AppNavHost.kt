@@ -13,6 +13,7 @@ import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModelFactory
 import com.haeti.ddolie.presentation.init.navigation.addInitialGraph
 import com.haeti.ddolie.presentation.recognition.navigation.addVoiceRecognitionGraph
+import com.haeti.ddolie.presentation.result.navigation.addResultGraph
 import com.haeti.ddolie.presentation.start.navigation.addStartGraph
 
 @Composable
@@ -37,6 +38,7 @@ fun AppNavHost(
             addInitialGraph(navController = navController, viewModel = viewModel)
             addVoiceRecognitionGraph(navController = navController, viewModel = viewModel)
             addAnalysisGraph(navController = navController, viewModel = viewModel)
+            addResultGraph(navController = navController, viewModel = viewModel)
         }
     }
 }
