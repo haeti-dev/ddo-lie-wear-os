@@ -1,5 +1,7 @@
 package com.haeti.ddolie.presentation.init
 
+import android.Manifest
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,18 +28,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.component.CtaButton
+import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
+import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.util.toTextDp
+import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
+import com.haeti.ddolie.presentation.recognition.navigation.VoiceRecognitionRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun InitialScreen() {
+fun InitialScreen(
+    navController: NavController,
+    viewModel: DdoLieViewModel,
+) {
+    val permissionState = rememberPermissionState(
+        permission = Manifest.permission.BODY_SENSORS,
+        onPermissionResult = { granted ->
+            Log.e("InitialScreen", "Permission granted: $granted")
+        }
+    )
+
     var isMeasuring by remember { mutableStateOf(false) }
     var activeCircleIndex by remember { mutableIntStateOf(0) }
 
@@ -45,7 +65,24 @@ fun InitialScreen() {
     val inactiveCircleColor = Color(0xFF333333)
     val circleRadius = 6f
 
+    LaunchedEffect(true) {
+        if (!permissionState.status.isGranted) permissionState.launchPermissionRequest()
+
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is DdoLieSideEffect.NavigateToVoiceRecognition -> {
+                    navController.navigate(VoiceRecognitionRoute.Main)
+                }
+
+                is DdoLieSideEffect.ShowError -> {
+                    // TODO : Show error Toast
+                }
+            }
+        }
+    }
+
     LaunchedEffect(isMeasuring) {
+        Log.e("InitialScreen", "isMeasuring: $isMeasuring")
         if (isMeasuring) {
             repeat(4) {
                 repeat(8) {
@@ -102,7 +139,10 @@ fun InitialScreen() {
 
                 CtaButton(
                     text = "시작하기",
-                    onClick = { isMeasuring = true }
+                    onClick = {
+                        isMeasuring = true
+                        viewModel.onIntent(DdoLieIntent.StartInitialMeasurement)
+                    }
                 )
             }
         }
@@ -143,10 +183,4 @@ fun InitialScreen() {
             }
         }
     }
-}
-
-@WearPreviewDevices
-@Composable
-fun InitialScreenPreview() {
-    InitialScreen()
 }
