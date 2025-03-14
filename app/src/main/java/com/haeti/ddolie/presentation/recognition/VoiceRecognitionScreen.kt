@@ -58,7 +58,7 @@ fun VoiceRecognitionScreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         Image(
-            painter = painterResource(R.drawable.img_graph),
+            painter = painterResource(R.drawable.img_background),
             contentDescription = "graph",
             modifier = Modifier.fillMaxSize(),
         )
