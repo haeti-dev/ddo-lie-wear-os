@@ -77,6 +77,8 @@ fun InitialScreen(
                 is DdoLieSideEffect.ShowError -> {
                     // TODO : Show error Toast
                 }
+
+                else -> {}
             }
         }
     }

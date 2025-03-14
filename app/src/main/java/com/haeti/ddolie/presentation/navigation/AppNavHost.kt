@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
+import com.haeti.ddolie.presentation.analysis.navigation.addAnalysisGraph
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModelFactory
 import com.haeti.ddolie.presentation.init.navigation.addInitialGraph
@@ -35,6 +36,7 @@ fun AppNavHost(
             addStartGraph(navController)
             addInitialGraph(navController = navController, viewModel = viewModel)
             addVoiceRecognitionGraph(navController = navController, viewModel = viewModel)
+            addAnalysisGraph(navController = navController, viewModel = viewModel)
         }
     }
 }
