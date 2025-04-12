@@ -40,6 +40,7 @@ import androidx.wear.compose.material.Text
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.component.CtaButton
 import com.haeti.ddolie.presentation.common.contract.LieResult
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.start.navigation.StartRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
@@ -94,11 +95,21 @@ fun LieResultScreen(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager = context.getSystemService(VibratorManager::class.java)
             val vibrator = vibratorManager?.defaultVibrator
-            vibrator?.vibrate(VibrationEffect.createOneShot(1000, 200))
+            vibrator?.vibrate(
+                VibrationEffect.createOneShot(
+                    DdoLieConstants.Vibration.VIBRATION_DURATION,
+                    DdoLieConstants.Vibration.VIBRATION_AMPLITUDE
+                )
+            )
         } else {
             @Suppress("DEPRECATION")
             val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-            vibrator?.vibrate(VibrationEffect.createOneShot(1000, 200))
+            vibrator?.vibrate(
+                VibrationEffect.createOneShot(
+                    DdoLieConstants.Vibration.VIBRATION_DURATION,
+                    DdoLieConstants.Vibration.VIBRATION_AMPLITUDE
+                )
+            )
         }
     }
 

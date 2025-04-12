@@ -9,15 +9,16 @@ import com.haeti.ddolie.presentation.common.contract.DdoLieState
 import com.haeti.ddolie.presentation.common.contract.LieResult
 import com.haeti.ddolie.presentation.common.manager.HealthServiceManager
 import com.haeti.ddolie.presentation.common.manager.MeasureMessage
-import com.haeti.ddolie.presentation.util.DdoLieConstants.FINALIZE_DELAY
-import com.haeti.ddolie.presentation.util.DdoLieConstants.HEART_RATE_MIN_THRESHOLD
-import com.haeti.ddolie.presentation.util.DdoLieConstants.INITIAL_MEASUREMENT_TIMEOUT
-import com.haeti.ddolie.presentation.util.DdoLieConstants.LIE_THRESHOLD
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.FINALIZE_DELAY
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.HEART_RATE_MIN_THRESHOLD
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.INITIAL_MEASUREMENT_TIMEOUT
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.LIE_THRESHOLD
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+
 
 class DdoLieViewModel(
     private val healthServiceManager: HealthServiceManager,
