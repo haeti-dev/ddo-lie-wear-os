@@ -135,7 +135,7 @@ fun ResultScreenContent(
     var showFullScreenImage by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        delay(2000L)
+        delay(DdoLieConstants.Animation.RESULT_SCREEN_DELAY)
         showFullScreenImage = false
     }
 

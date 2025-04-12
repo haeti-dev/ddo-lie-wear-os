@@ -37,6 +37,7 @@ import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.component.CtaButton
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Animation
 import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.recognition.navigation.VoiceRecognitionRoute
@@ -86,10 +87,10 @@ fun InitialScreen(
     LaunchedEffect(isMeasuring) {
         Log.e("InitialScreen", "isMeasuring: $isMeasuring")
         if (isMeasuring) {
-            repeat(4) {
-                repeat(8) {
+            repeat(Animation.INITIAL_SCREEN_ANIMATION_CYCLES) {
+                repeat(Animation.INITIAL_SCREEN_CYCLE_STEPS) {
                     activeCircleIndex = it
-                    delay(125)
+                    delay(Animation.INITIAL_SCREEN_STEP_DELAY)
                 }
             }
             // TODO : 측정 완료 로직 추가
@@ -160,8 +161,8 @@ fun InitialScreen(
             LaunchedEffect(isMeasuring) {
                 if (isMeasuring) {
                     repeat(12) {
-                        dotPhaseIndex = (dotPhaseIndex + 1) % 3
-                        delay(333)
+                        dotPhaseIndex = (dotPhaseIndex + 1) % Animation.DOT_PHASES_COUNT
+                        delay(Animation.DOT_ANIMATION_DELAY)
                     }
                 }
             }
