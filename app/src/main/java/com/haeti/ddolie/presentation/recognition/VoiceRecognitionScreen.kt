@@ -31,6 +31,7 @@ import com.haeti.ddolie.presentation.analysis.navigation.AnalysisRoute
 import com.haeti.ddolie.presentation.common.component.CtaButton
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Animation
 import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
@@ -104,7 +105,7 @@ fun VoiceRecognitionScreen(
             LaunchedEffect(isTalking) {
                 while (isTalking) {
                     dotPhaseIndex = (dotPhaseIndex + 1) % 3
-                    delay(333)
+                    delay(Animation.DOT_ANIMATION_DELAY)
                 }
             }
 

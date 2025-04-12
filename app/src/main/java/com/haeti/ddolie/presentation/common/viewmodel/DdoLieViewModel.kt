@@ -9,11 +9,16 @@ import com.haeti.ddolie.presentation.common.contract.DdoLieState
 import com.haeti.ddolie.presentation.common.contract.LieResult
 import com.haeti.ddolie.presentation.common.manager.HealthServiceManager
 import com.haeti.ddolie.presentation.common.manager.MeasureMessage
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.FINALIZE_DELAY
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.HEART_RATE_MIN_THRESHOLD
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.INITIAL_MEASUREMENT_TIMEOUT
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.LIE_THRESHOLD
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+
 
 class DdoLieViewModel(
     private val healthServiceManager: HealthServiceManager,
@@ -46,13 +51,13 @@ class DdoLieViewModel(
             val heartRates = mutableListOf<Double>()
 
             try {
-                withTimeout(4000L) {
+                withTimeout(INITIAL_MEASUREMENT_TIMEOUT) {
                     healthServiceManager.heartRateMeasureFlow()
                         .collect { message ->
                             when (message) {
                                 is MeasureMessage.MeasureData -> {
                                     val lastValue = message.data.last().value
-                                    if (lastValue > 0.0) {
+                                    if (lastValue > HEART_RATE_MIN_THRESHOLD) {
                                         heartRates.add(lastValue)
                                     }
                                     Log.e("ViewModel", "Heart rate data received: $lastValue")
@@ -85,7 +90,7 @@ class DdoLieViewModel(
                     when (message) {
                         is MeasureMessage.MeasureData -> {
                             val lastValue = message.data.last().value
-                            if (lastValue > 0.0) {
+                            if (lastValue > HEART_RATE_MIN_THRESHOLD) {
                                 heartRates.add(lastValue)
                                 Log.e("ViewModel", "Heart rate data received: $lastValue")
                             }
@@ -105,14 +110,14 @@ class DdoLieViewModel(
 
     private fun finalizeMeasurement() {
         viewModelScope.launch {
-            delay(5000L)
+            delay(FINALIZE_DELAY)
             measurementJob?.cancel()
 
             val finalAvg = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
             val initialAvg = currentState.initialHeartRateAvg
             val diff = if (initialAvg != null && finalAvg != null) finalAvg - initialAvg else 0f
 
-            val result = if (diff >= 2f) LieResult.LIE else LieResult.TRUTH
+            val result = if (diff >= LIE_THRESHOLD) LieResult.LIE else LieResult.TRUTH
 
             intent { copy(finalHeartRateAvg = finalAvg, isLie = result) }
             Log.e("ViewModel", "Final heart rate average: $finalAvg")
