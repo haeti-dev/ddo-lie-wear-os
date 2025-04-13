@@ -20,12 +20,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.haeti.ddolie.R
-import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.init.navigation.InitialRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 
@@ -86,9 +86,9 @@ fun StartScreen(
 
             Text(
                 text = "시작하려면 화면을\n터치해주세요",
-                fontSize = 15.toTextDp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                lineHeight = 23.toTextDp,
+                lineHeight = 23.sp,
                 textAlign = TextAlign.Center
             )
         }

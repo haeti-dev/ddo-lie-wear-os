@@ -11,10 +11,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Text
-import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 
 @Composable
@@ -45,7 +45,7 @@ fun CtaButton(
             Text(
                 text = text,
                 textAlign = TextAlign.Center,
-                fontSize = 18.toTextDp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )
         },
