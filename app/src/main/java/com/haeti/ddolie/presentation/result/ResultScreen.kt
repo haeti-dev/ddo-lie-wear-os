@@ -90,7 +90,6 @@ fun LieResultScreen(
 ) {
     val context = LocalContext.current
 
-
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager = context.getSystemService(VibratorManager::class.java)

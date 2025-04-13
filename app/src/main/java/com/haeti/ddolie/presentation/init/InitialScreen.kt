@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -38,7 +39,6 @@ import com.haeti.ddolie.presentation.common.component.CtaButton
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Animation
-import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.recognition.navigation.VoiceRecognitionRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
@@ -132,9 +132,9 @@ fun InitialScreen(
             ) {
                 Text(
                     text = "거짓말 탐지 전\n상태를 측정하세요",
-                    fontSize = 20.toTextDp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    lineHeight = 30.toTextDp,
+                    lineHeight = 30.sp,
                     textAlign = TextAlign.Center
                 )
 
@@ -179,7 +179,7 @@ fun InitialScreen(
 
                 Text(
                     text = "측정 중" + dotPhases[dotPhaseIndex],
-                    fontSize = 20.toTextDp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = DdoLieTheme.colors.white,
                 )

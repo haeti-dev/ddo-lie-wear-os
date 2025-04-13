@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.haeti.ddolie.R
@@ -32,7 +33,6 @@ import com.haeti.ddolie.presentation.common.component.CtaButton
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Animation
-import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
 import kotlinx.coroutines.delay
@@ -76,9 +76,9 @@ fun VoiceRecognitionScreen(
             ) {
                 Text(
                     text = "시작 버튼을 누르고\n말해보세요",
-                    fontSize = 20.toTextDp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    lineHeight = 30.toTextDp,
+                    lineHeight = 30.sp,
                     textAlign = TextAlign.Center
                 )
 
@@ -124,7 +124,7 @@ fun VoiceRecognitionScreen(
 
                 Text(
                     text = "센서 작동 중" + dotPhases[dotPhaseIndex],
-                    fontSize = 20.toTextDp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = DdoLieTheme.colors.white,
                 )

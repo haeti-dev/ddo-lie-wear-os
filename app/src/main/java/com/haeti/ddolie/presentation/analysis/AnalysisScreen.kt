@@ -20,12 +20,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
-import com.haeti.ddolie.presentation.common.util.toTextDp
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.result.navigation.ResultRoute
 import com.haeti.ddolie.presentation.theme.DdoLieTheme
@@ -115,7 +115,7 @@ fun AnalysisScreen(
                         append(dotPhases[dotPhaseIndex])
                     }
                 },
-                fontSize = 20.toTextDp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
