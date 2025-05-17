@@ -47,9 +47,28 @@ fun StartScreen(
             .clickable { navController.navigate(InitialRoute.Main) },
         contentAlignment = Alignment.Center
     ) {
+        val screenWidthDp = maxWidth
+
+        // 44mm 화면 기준
+        val baseWidthDp = 218.dp
+
+        val scale = screenWidthDp / baseWidthDp
+
+        val baseImageWidth  = 108.dp
+        val baseImageHeight = 70.dp
+        val imageWidth  = baseImageWidth  * scale
+        val imageHeight = baseImageHeight * scale
+
+        val baseFontSize  = 15.toTextDp
+        val baseLineHeight = 23.toTextDp
+        val fontSize   = baseFontSize * scale
+        val lineHeight = baseLineHeight * scale
+
+        val baseSpacer = 10.dp
+        val spacerHeight = baseSpacer * scale
 
         Box(
-            modifier = Modifier.size(maxWidth),
+            modifier = Modifier.size(screenWidthDp),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.matchParentSize()) {
@@ -71,7 +90,6 @@ fun StartScreen(
                 drawCircle(color = RedPrimary, radius = radiusPx * 0.75f)
             }
 
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,16 +98,16 @@ fun StartScreen(
                 Image(
                     painter = painterResource(R.drawable.img_logo),
                     contentDescription = "logo",
-                    modifier = Modifier.size(width = 108.dp, height = 70.dp)
+                    modifier = Modifier.size(width = imageWidth, height = imageHeight)
                 )
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(spacerHeight))
 
                 Text(
                     text = "시작하려면 화면을\n터치해주세요",
-                    fontSize = 15.toTextDp,
+                    fontSize = fontSize,
                     fontWeight = FontWeight.Bold,
-                    lineHeight = 23.toTextDp,
+                    lineHeight = lineHeight,
                     textAlign = TextAlign.Center
                 )
             }
