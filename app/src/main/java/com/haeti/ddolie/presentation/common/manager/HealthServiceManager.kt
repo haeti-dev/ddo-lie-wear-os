@@ -12,37 +12,42 @@ import androidx.health.services.client.data.DeltaDataType
 import androidx.health.services.client.data.SampleDataPoint
 import androidx.health.services.client.getCapabilities
 import androidx.health.services.client.unregisterMeasureCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 class HealthServiceManager(context: Context) {
     private val measureClient = HealthServices.getClient(context).measureClient
+    private val cleanupScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     suspend fun hasHeartRateCapability() = runCatching {
         val capabilities = measureClient.getCapabilities()
         (DataType.HEART_RATE_BPM in capabilities.supportedDataTypesMeasure)
     }.getOrDefault(false)
 
-    fun heartRateMeasureFlow(): Flow<MeasureMessage> = callbackFlow {
+    private val rawFlow: Flow<MeasureMessage> = callbackFlow {
         val callback = object : MeasureCallback {
             override fun onAvailabilityChanged(
                 dataType: DeltaDataType<*, *>,
                 availability: Availability,
             ) {
                 if (availability is DataTypeAvailability) {
+                    Log.d("DdoLieFlow", "availability=$availability")
                     trySendBlocking(MeasureMessage.MeasureAvailability(availability))
                 }
             }
 
             override fun onDataReceived(data: DataPointContainer) {
                 val heartRateBpm = data.getData(DataType.HEART_RATE_BPM)
-                Log.e(
-                    "HeartServiceManager",
-                    "Heart rate data received: ${heartRateBpm.first().value}"
-                )
+                if (heartRateBpm.isEmpty()) return
                 trySendBlocking(MeasureMessage.MeasureData(heartRateBpm))
             }
         }
@@ -50,11 +55,22 @@ class HealthServiceManager(context: Context) {
         measureClient.registerMeasureCallback(DataType.HEART_RATE_BPM, callback)
 
         awaitClose {
-            runBlocking {
+            cleanupScope.launch(NonCancellable) {
                 measureClient.unregisterMeasureCallback(DataType.HEART_RATE_BPM, callback)
             }
         }
     }
+
+    // 두 측정 phase가 동일 등록을 공유하도록 shareIn.
+    // WhileSubscribed(stopTimeoutMillis=15000) → 마지막 구독자 해제 후 15초 동안
+    // 등록을 유지하므로 phase 사이 warm-up이 다시 일어나지 않는다.
+    private val sharedFlow: Flow<MeasureMessage> = rawFlow.shareIn(
+        scope = cleanupScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 15_000),
+        replay = 0,
+    )
+
+    fun heartRateMeasureFlow(): Flow<MeasureMessage> = sharedFlow
 }
 
 sealed class MeasureMessage {

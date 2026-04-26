@@ -34,7 +34,7 @@ fun AppNavHost(
             navController = navigator.navController,
             startDestination = navigator.startDestination,
         ) {
-            addStartGraph(navController)
+            addStartGraph(navController = navController, viewModel = viewModel)
             addInitialGraph(navController = navController, viewModel = viewModel)
             addVoiceRecognitionGraph(navController = navController, viewModel = viewModel)
             addAnalysisGraph(navController = navController, viewModel = viewModel)

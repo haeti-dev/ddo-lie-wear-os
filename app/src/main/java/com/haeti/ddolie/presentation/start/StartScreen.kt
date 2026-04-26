@@ -1,7 +1,7 @@
 package com.haeti.ddolie.presentation.start
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -14,24 +14,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.util.toTextDp
+import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.init.navigation.InitialRoute
-import com.haeti.ddolie.presentation.theme.DdoLieTheme
 import com.haeti.ddolie.presentation.theme.RedPrimary
 import com.haeti.ddolie.presentation.theme.RedSecondary
 import com.haeti.ddolie.presentation.theme.RedTertiary
@@ -40,7 +40,18 @@ import com.haeti.ddolie.presentation.theme.RedTertiary
 @Composable
 fun StartScreen(
     navController: NavController,
+    viewModel: DdoLieViewModel,
 ) {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val granted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.BODY_SENSORS,
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) viewModel.startPrewarm()
+        onDispose { viewModel.stopPrewarm() }
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -54,14 +65,14 @@ fun StartScreen(
 
         val scale = screenWidthDp / baseWidthDp
 
-        val baseImageWidth  = 108.dp
+        val baseImageWidth = 108.dp
         val baseImageHeight = 70.dp
-        val imageWidth  = baseImageWidth  * scale
+        val imageWidth = baseImageWidth * scale
         val imageHeight = baseImageHeight * scale
 
-        val baseFontSize  = 15.toTextDp
+        val baseFontSize = 15.toTextDp
         val baseLineHeight = 23.toTextDp
-        val fontSize   = baseFontSize * scale
+        val fontSize = baseFontSize * scale
         val lineHeight = baseLineHeight * scale
 
         val baseSpacer = 10.dp
@@ -115,17 +126,3 @@ fun StartScreen(
     }
 }
 
-@WearPreviewDevices
-@Preview(
-    name = "40mm – 396×396px",
-    device = "spec:width=396px,height=396px,dpi=330", // 40mm 모델 테스트
-    uiMode = Configuration.UI_MODE_TYPE_WATCH,
-    showSystemUi = false,
-    showBackground = false
-)
-@Composable
-fun PreviewStartScreen() {
-    DdoLieTheme {
-        StartScreen(navController = rememberNavController())
-    }
-}
