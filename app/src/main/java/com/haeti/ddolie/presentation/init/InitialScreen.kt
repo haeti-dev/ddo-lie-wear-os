@@ -1,8 +1,14 @@
 package com.haeti.ddolie.presentation.init
 
 import android.Manifest
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
@@ -52,15 +58,35 @@ fun InitialScreen(
     navController: NavController,
     viewModel: DdoLieViewModel,
 ) {
-    val permissionState = rememberPermissionState(
-        permission = Manifest.permission.BODY_SENSORS,
-        onPermissionResult = { granted ->
-            Log.e("InitialScreen", "Permission granted: $granted")
-        }
-    )
+    val permissionState = rememberPermissionState(Manifest.permission.BODY_SENSORS)
 
     var isMeasuring by remember { mutableStateOf(false) }
-    var activeCircleIndex by remember { mutableIntStateOf(0) }
+    var circleStarted by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isMeasuring) {
+        if (isMeasuring) {
+            delay(Animation.FADE_TRANSITION_MS.toLong())
+            circleStarted = true
+        } else {
+            circleStarted = false
+        }
+    }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "initialCircle")
+    val animatedCircleIndex by infiniteTransition.animateValue(
+        initialValue = 0,
+        targetValue = 8,
+        typeConverter = Int.VectorConverter,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = Animation.INITIAL_CIRCLE_CYCLE_MS,
+                easing = LinearEasing,
+            ),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "initialCircleIndex",
+    )
+    val activeCircleIndex = if (circleStarted) animatedCircleIndex % 8 else -1
 
     val activeCircleColor = Color(0xFFF44522)
     val inactiveCircleColor = Color(0xFF333333)
@@ -81,19 +107,6 @@ fun InitialScreen(
 
                 else -> {}
             }
-        }
-    }
-
-    LaunchedEffect(isMeasuring) {
-        Log.e("InitialScreen", "isMeasuring: $isMeasuring")
-        if (isMeasuring) {
-            repeat(Animation.INITIAL_SCREEN_ANIMATION_CYCLES) {
-                repeat(Animation.INITIAL_SCREEN_CYCLE_STEPS) {
-                    activeCircleIndex = it
-                    delay(Animation.INITIAL_SCREEN_STEP_DELAY)
-                }
-            }
-            // TODO : 측정 완료 로직 추가
         }
     }
 
@@ -122,8 +135,8 @@ fun InitialScreen(
 
         AnimatedVisibility(
             visible = !isMeasuring,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = fadeIn(animationSpec = tween(Animation.FADE_TRANSITION_MS)),
+            exit = fadeOut(animationSpec = tween(Animation.FADE_TRANSITION_MS)),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -152,18 +165,16 @@ fun InitialScreen(
 
         AnimatedVisibility(
             visible = isMeasuring,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = fadeIn(animationSpec = tween(Animation.FADE_TRANSITION_MS)),
+            exit = fadeOut(animationSpec = tween(Animation.FADE_TRANSITION_MS)),
         ) {
             val dotPhases = listOf(".", "..", "...")
             var dotPhaseIndex by remember { mutableIntStateOf(0) }
 
-            LaunchedEffect(isMeasuring) {
-                if (isMeasuring) {
-                    repeat(12) {
-                        dotPhaseIndex = (dotPhaseIndex + 1) % Animation.DOT_PHASES_COUNT
-                        delay(Animation.DOT_ANIMATION_DELAY)
-                    }
+            LaunchedEffect(circleStarted) {
+                while (circleStarted) {
+                    dotPhaseIndex = (dotPhaseIndex + 1) % Animation.DOT_PHASES_COUNT
+                    delay(Animation.DOT_ANIMATION_DELAY)
                 }
             }
 
@@ -185,5 +196,6 @@ fun InitialScreen(
                 )
             }
         }
+
     }
 }

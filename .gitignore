@@ -13,3 +13,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# IDE
+/.idea/markdown.xml
+
+# OMC artifacts/state
+/.omc/
+
+# Build outputs
+/app/release/
+
+# Signing keystores
+*.jks

@@ -2,7 +2,7 @@ package com.haeti.ddolie.presentation.common.util
 
 object DdoLieConstants {
     object Measurement {
-        const val INITIAL_MEASUREMENT_TIMEOUT = 4000L
+        const val INITIAL_MEASUREMENT_TIMEOUT = 5000L
         const val FINALIZE_DELAY = 5000L
         const val HEART_RATE_MIN_THRESHOLD = 0.0
     }
@@ -19,5 +19,7 @@ object DdoLieConstants {
         const val INITIAL_SCREEN_CYCLE_STEPS = 8
         const val INITIAL_SCREEN_STEP_DELAY = 125L
         const val DOT_PHASES_COUNT = 3
+        const val FADE_TRANSITION_MS = 400
+        const val INITIAL_CIRCLE_CYCLE_MS = 1000
     }
 }

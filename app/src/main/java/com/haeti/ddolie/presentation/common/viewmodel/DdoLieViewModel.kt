@@ -1,5 +1,6 @@
 package com.haeti.ddolie.presentation.common.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.haeti.ddolie.presentation.common.base.BaseViewModel
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
@@ -11,9 +12,11 @@ import com.haeti.ddolie.presentation.common.manager.MeasureMessage
 import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.FINALIZE_DELAY
 import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.HEART_RATE_MIN_THRESHOLD
 import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Measurement.INITIAL_MEASUREMENT_TIMEOUT
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.random.Random
@@ -22,7 +25,27 @@ class DdoLieViewModel(
     private val healthServiceManager: HealthServiceManager,
 ) : BaseViewModel<DdoLieIntent, DdoLieState, DdoLieSideEffect>(DdoLieState()) {
     var measurementJob: Job? = null
+    private var prewarmJob: Job? = null
     val heartRates = mutableListOf<Double>()
+
+    fun startPrewarm() {
+        if (prewarmJob?.isActive == true) return
+        prewarmJob = viewModelScope.launch {
+            healthServiceManager.heartRateMeasureFlow()
+                .flowOn(Dispatchers.Default)
+                .collect { /* discard, just keep registration warm */ }
+        }
+    }
+
+    fun stopPrewarm() {
+        prewarmJob?.cancel()
+        prewarmJob = null
+    }
+
+    private companion object {
+        const val TAG = "DdoLieFlow"
+        const val BASELINE_FALLBACK_SAMPLES = 2
+    }
 
     override fun onIntent(intent: DdoLieIntent) {
         when (intent) {
@@ -45,18 +68,26 @@ class DdoLieViewModel(
     }
 
     private fun startInitialMeasurement() {
+        measurementJob?.cancel()
+        heartRates.clear()
+        intent {
+            copy(initialHeartRateAvg = null, finalHeartRateAvg = null, isLie = null)
+        }
+
         viewModelScope.launch {
-            val heartRates = mutableListOf<Double>()
+            val initialSamples = mutableListOf<Double>()
 
             try {
                 withTimeout(INITIAL_MEASUREMENT_TIMEOUT) {
                     healthServiceManager.heartRateMeasureFlow()
+                        .flowOn(Dispatchers.Default)
                         .collect { message ->
                             when (message) {
                                 is MeasureMessage.MeasureData -> {
+                                    if (message.data.isEmpty()) return@collect
                                     val lastValue = message.data.last().value
                                     if (lastValue > HEART_RATE_MIN_THRESHOLD) {
-                                        heartRates.add(lastValue)
+                                        initialSamples.add(lastValue)
                                     }
                                 }
 
@@ -70,7 +101,9 @@ class DdoLieViewModel(
                 // 타임아웃 처리
             }
 
-            val average = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
+            val average =
+                if (initialSamples.isNotEmpty()) initialSamples.average().toFloat() else null
+            Log.d(TAG, "[1/3] 초기 측정 - samples=${initialSamples.size}, avg=$average")
             intent { copy(initialHeartRateAvg = average) }
             postSideEffect(DdoLieSideEffect.NavigateToVoiceRecognition)
         }
@@ -81,9 +114,11 @@ class DdoLieViewModel(
 
         measurementJob = viewModelScope.launch {
             healthServiceManager.heartRateMeasureFlow()
+                .flowOn(Dispatchers.Default)
                 .collect { message ->
                     when (message) {
                         is MeasureMessage.MeasureData -> {
+                            if (message.data.isEmpty()) return@collect
                             val lastValue = message.data.last().value
                             if (lastValue > HEART_RATE_MIN_THRESHOLD) {
                                 heartRates.add(lastValue)
@@ -107,22 +142,41 @@ class DdoLieViewModel(
             delay(FINALIZE_DELAY)
             measurementJob?.cancel()
 
-            // 피크 기반 차이 계산
-            val maxHeartRate = if (heartRates.isNotEmpty()) {
-                heartRates.maxOrNull()?.toFloat()
+            val initialAvgFromState = currentState.initialHeartRateAvg
+
+            // 초기 측정이 비어있으면 분석 측정 앞쪽 2개를 baseline으로 사용.
+            val baselineFromAnalysis = if (initialAvgFromState == null) {
+                heartRates.take(BASELINE_FALLBACK_SAMPLES)
+                    .takeIf { it.isNotEmpty() }
+                    ?.average()
+                    ?.toFloat()
             } else null
 
-            val initialAvg = currentState.initialHeartRateAvg
-            val diff = if (initialAvg != null && maxHeartRate != null) {
-                maxHeartRate - initialAvg
+            val effectiveInitialAvg = initialAvgFromState ?: baselineFromAnalysis
+
+            // baseline을 분석에서 떼어왔으면 그만큼 비교 set에서 제외
+            val comparisonSet = if (baselineFromAnalysis != null) {
+                heartRates.drop(BASELINE_FALLBACK_SAMPLES)
+            } else {
+                heartRates
+            }
+
+            val maxHeartRate = comparisonSet.maxOrNull()?.toFloat()
+            val diff = if (effectiveInitialAvg != null && maxHeartRate != null) {
+                maxHeartRate - effectiveInitialAvg
             } else 0f
+
+            val finalAvg = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
+            Log.d(
+                TAG,
+                "[2/3] 분석 측정 - samples=${heartRates.size}, avg=$finalAvg, max=$maxHeartRate, baselineFallback=$baselineFromAnalysis",
+            )
 
             val result = determineLieResult(diff)
 
-            val finalAvg = if (heartRates.isNotEmpty()) heartRates.average().toFloat() else null
-
             intent { copy(finalHeartRateAvg = finalAvg, isLie = result) }
             postSideEffect(DdoLieSideEffect.NavigateToResult)
+            stopPrewarm()
         }
     }
 
@@ -146,6 +200,11 @@ class DdoLieViewModel(
         val finalScore = (heartRateScore * 0.6f) + (randomFactor * 0.4f)
 
         // 4. 판정 (임계값 0.5)
-        return if (finalScore >= 0.5f) LieResult.LIE else LieResult.TRUTH
+        val result = if (finalScore >= 0.5f) LieResult.LIE else LieResult.TRUTH
+        Log.d(
+            TAG,
+            "[3/3] 결과 - diff=$diff, hrScore=$heartRateScore, random=$randomFactor, finalScore=$finalScore, verdict=$result",
+        )
+        return result
     }
 }
