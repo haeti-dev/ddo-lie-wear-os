@@ -1,6 +1,6 @@
 <div align="center">
 
-# DDolie – 거짓말 탐지기 (Wear OS)
+# DDolie – 거짓말 탐지기
 
 <img width="1024" alt="App graphic" src="https://github.com/user-attachments/assets/cf239f95-a140-435f-a32a-3d79ac1fb279" />
 
@@ -14,6 +14,20 @@
 </div>
 
 ---
+
+## 📦 저장소 구조
+
+심박수 측정을 활용한 거짓말 탐지기 게임 워치 앱입니다. 두 워치 플랫폼을 하나의 저장소에서 관리합니다.
+
+| 디렉토리 | 플랫폼 | 기술 | 상태 |
+|---|---|---|---|
+| [`wearos/`](wearos/) | Wear OS (Galaxy Watch) | Kotlin · Jetpack Compose | [출시](https://play.google.com/store/apps/details?id=com.haeti.ddolie) |
+| `watchos/` | watchOS (Apple Watch) | Swift · SwiftUI | 개발 중 |
+
+두 플랫폼은 문구·화면 플로우·색상·애니메이션이 동일한 하나의 제품으로 유지됩니다.
+
+---
+
 ## 📱 앱 스크린샷
 <p align="center">
   <img width="160" src="https://github.com/user-attachments/assets/8f27d694-c16f-455a-9d3e-8c722469cc69" />
@@ -43,8 +57,9 @@
 ---
 
 ## 🛠 기술 스택
+
+### Wear OS (`wearos/`)
 - Kotlin
-- Wear OS
 - Jetpack Compose
 - Kotlin Coroutines
 - ViewModel MVI
@@ -52,4 +67,6 @@
 - Google Play Services Wearable
 - Kotlinx Serialization
 
-
+### watchOS (`watchos/`) — 개발 중
+- Swift · SwiftUI
+- HealthKit (HKWorkoutSession)

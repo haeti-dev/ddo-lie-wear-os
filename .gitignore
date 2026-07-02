@@ -1,0 +1,11 @@
+.DS_Store
+*.jks
+local.properties
+
+# Tool caches at repo root
+.gradle/
+.kotlin/
+.omc/
+
+# Claude Code personal settings
+.claude/settings.local.json
