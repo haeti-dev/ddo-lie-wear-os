@@ -1,0 +1,30 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# IDE
+/.idea/markdown.xml
+
+# OMC artifacts/state
+/.omc/
+
+# Build outputs
+/app/release/
+
+# Signing keystores
+*.jks
+
+# IDE assistant artifacts
+/.idea/ChatHistory*
