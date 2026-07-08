@@ -7,9 +7,15 @@ description: Check parity of constants (timing/sizes), colors, copy, and screen 
 
 Verify the two platforms have not drifted apart. On any mismatch, **wearos wins** (it is the source of truth).
 
-## Current state
+## Automated check
 
-`scripts/check_parity.py` will be added together with the watchos constants files (`Constants.swift`, `Colors.swift`). Until then, follow the manual procedure below.
+Run first:
+
+```
+python3 .claude/skills/parity-check/scripts/check_parity.py
+```
+
+It compares timing/size constants (`DdoLieConstants.kt` ↔ `Constants.swift`, snake_case↔camelCase) and colors (`Colors.kt` ↔ `Colors.swift`, ARGB hex) and exits 1 on mismatch. Copy and flow are not automated — check them manually per below.
 
 ## What to check
 
