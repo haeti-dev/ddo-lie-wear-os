@@ -9,3 +9,6 @@ local.properties
 
 # Claude Code personal settings
 .claude/settings.local.json
+
+# IDE
+.idea/
