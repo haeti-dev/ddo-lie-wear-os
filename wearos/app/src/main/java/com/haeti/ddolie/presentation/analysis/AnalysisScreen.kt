@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.haeti.ddolie.R
 import com.haeti.ddolie.presentation.common.contract.DdoLieIntent
+import com.haeti.ddolie.presentation.common.util.DdoLieConstants.Animation
 import com.haeti.ddolie.presentation.common.contract.DdoLieSideEffect
 import com.haeti.ddolie.presentation.common.viewmodel.DdoLieViewModel
 import com.haeti.ddolie.presentation.result.navigation.ResultRoute
@@ -57,18 +58,18 @@ fun AnalysisScreen(
     var dotPhaseIndex by rememberSaveable { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
-        repeat(5) {
-            repeat(8) { index ->
+        repeat(Animation.ANALYSIS_RING_CYCLES) {
+            repeat(Animation.INITIAL_SCREEN_CYCLE_STEPS) { index ->
                 activeCircleIndex = index
-                delay(125)
+                delay(Animation.INITIAL_SCREEN_STEP_DELAY)
             }
         }
     }
 
     LaunchedEffect(Unit) {
-        repeat(15) {
-            dotPhaseIndex = (dotPhaseIndex + 1) % 3
-            delay(333)
+        repeat(Animation.ANALYSIS_DOT_PHASE_REPEATS) {
+            dotPhaseIndex = (dotPhaseIndex + 1) % Animation.DOT_PHASES_COUNT
+            delay(Animation.DOT_ANIMATION_DELAY)
         }
     }
 

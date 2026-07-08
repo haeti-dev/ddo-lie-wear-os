@@ -28,3 +28,4 @@ local.properties
 
 # IDE assistant artifacts
 /.idea/ChatHistory*
+/.idea/deviceManager.xml

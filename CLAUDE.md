@@ -1,4 +1,4 @@
-# DDolie (또라이)
+# DDolie (또 Lie)
 
 A lie-detector game watch app built on heart-rate measurement. Shipped on Wear OS; a watchOS port lives in the same repo.
 

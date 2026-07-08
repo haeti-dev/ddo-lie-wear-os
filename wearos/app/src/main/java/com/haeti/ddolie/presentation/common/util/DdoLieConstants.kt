@@ -21,5 +21,7 @@ object DdoLieConstants {
         const val DOT_PHASES_COUNT = 3
         const val FADE_TRANSITION_MS = 400
         const val INITIAL_CIRCLE_CYCLE_MS = 1000
+        const val ANALYSIS_RING_CYCLES = 5
+        const val ANALYSIS_DOT_PHASE_REPEATS = 15
     }
 }

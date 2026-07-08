@@ -1,0 +1,34 @@
+name: DdoLie
+options:
+  deploymentTarget:
+    watchOS: "10.0"
+  createIntermediateGroups: true
+
+targets:
+  DdoLie:
+    type: application
+    platform: watchOS
+    sources:
+      - DdoLie
+    info:
+      path: DdoLie/Info.plist
+      properties:
+        CFBundleDisplayName: 또 Lie
+        WKApplication: true
+        WKWatchOnly: true
+        NSHealthShareUsageDescription: 심박수 변화를 측정해 거짓말 탐지 게임을 진행하기 위해 심박수 데이터를 읽습니다.
+        NSHealthUpdateUsageDescription: 실시간 심박수 측정을 위한 세션 기록에 사용됩니다.
+        WKBackgroundModes:
+          - workout-processing
+    entitlements:
+      path: DdoLie/DdoLie.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.haeti.ddolie
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: 1
+        SWIFT_VERSION: "5.0"
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
