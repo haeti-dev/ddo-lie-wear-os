@@ -22,7 +22,7 @@
 | 디렉토리 | 플랫폼 | 기술 | 상태 |
 |---|---|---|---|
 | [`wearos/`](wearos/) | Wear OS (Galaxy Watch) | Kotlin · Jetpack Compose | [출시](https://play.google.com/store/apps/details?id=com.haeti.ddolie) |
-| `watchos/` | watchOS (Apple Watch) | Swift · SwiftUI | 개발 중 |
+| `watchos/` | watchOS (Apple Watch) | Swift · SwiftUI | 구현 완료 · 출시 준비 중 |
 
 두 플랫폼은 문구·화면 플로우·색상·애니메이션이 동일한 하나의 제품으로 유지됩니다.
 
@@ -67,6 +67,7 @@
 - Google Play Services Wearable
 - Kotlinx Serialization
 
-### watchOS (`watchos/`) — 개발 중
+### watchOS (`watchos/`)
 - Swift · SwiftUI
 - HealthKit (HKWorkoutSession)
+- XcodeGen

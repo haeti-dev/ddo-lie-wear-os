@@ -13,7 +13,7 @@ targets:
     info:
       path: DdoLie/Info.plist
       properties:
-        CFBundleDisplayName: 또라이
+        CFBundleDisplayName: 또 Lie
         WKApplication: true
         WKWatchOnly: true
         NSHealthShareUsageDescription: 심박수 변화를 측정해 거짓말 탐지 게임을 진행하기 위해 심박수 데이터를 읽습니다.
